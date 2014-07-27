@@ -1,0 +1,31 @@
+//sDA
+Public Class studentDA
+    Private da As New dataAccessLayer
+    Private dt As DataTable
+    Private sql As String = String.Empty
+    Public Function getAllStudents()
+        sql = "SELECT * FROM student_table"
+        Return da.getDataTable(sql)
+    End Function
+    Public Sub addStudent(ByVal sbo As studentBO)
+        sql = "INSERT INTO student_table(studentID,student_name,age,course,school) VALUES (" & sbo.studentID & ",'" & sbo.studentName & "'," & sbo.age & ",'" & sbo.course & "','" & sbo.school & "')"
+        da.exeQuery(sql)
+        MsgBox("new student added")
+    End Sub
+    Public Sub updateStudent(ByVal sbo As studentBO)
+        With sbo
+            sql = "UPDATE student_table set student_name = '" & .studentName & "',age = " & .age & ",course = '" & .course & "',school = '" & .school & "' WHERE studentID = " & .studentID & ""
+        End With
+        da.exeQuery(sql)
+        MsgBox("student has been updated")
+    End Sub
+    Public Sub deleteStudents(ByVal studentID As String)
+        If Form1.txtID.Text = "" Then
+            MsgBox("select the student you want to delete")
+        ElseIf MsgBox("are you sure you want to delete this student", vbYesNo) = vbYes Then
+            sql = "DELETE FROM student_table where " & " studentID=" & studentID
+            da.exeQuery(sql)
+            MsgBox("student has been deleted")
+        End If
+    End Sub
+End Class

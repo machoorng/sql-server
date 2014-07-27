@@ -1,0 +1,32 @@
+//Data Access Layer
+Public Class dataAccessLayer
+    Private conn As OleDb.OleDbConnection
+    Private cmd As OleDb.OleDbCommand
+    Private da As OleDb.OleDbDataAdapter
+    Private dt As DataTable
+    Public Sub connectToDB()
+        conn = New OleDb.OleDbConnection
+        cmd = New OleDb.OleDbCommand
+        conn.ConnectionString = "PROVIDER = SQLOLEDB;Data Source=.\SQLEXPRESS;Initial Catalog=student_table;Integrated Security=SSPI"
+        conn.Open()
+        cmd.Connection = conn
+        cmd.CommandType = CommandType.Text
+    End Sub
+    Public Function getDataTable(ByRef sql As String) As DataTable
+        connectToDB()
+        dt = New DataTable
+        da = New OleDb.OleDbDataAdapter
+        cmd.CommandText = sql
+        da.SelectCommand = cmd
+        dt.Clear()
+        da.Fill(dt)
+        Return dt
+    End Function
+    Public Sub exeQuery(ByVal sql As String)
+        connectToDB()
+        cmd.CommandText = sql
+        cmd.ExecuteNonQuery()
+
+    End Sub
+
+End Class

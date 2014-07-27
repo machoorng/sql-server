@@ -1,0 +1,83 @@
+//form
+Public Class Form1
+    Private add As Boolean = True
+    Private studentDa As New studentDA
+    Private studentBo As New studentBO
+
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        'TODO: This line of code loads data into the 'Student_tableDataSet.student_table' table. You can move, or remove it, as needed.
+        Me.Student_tableTableAdapter1.Fill(Me.Student_tableDataSet.student_table)
+        'TODO: This line of code loads data into the 'MyDatabaseDataSet.student_table' table. You can move, or remove it, as needed.
+        DataGridView1.DataSource = studentDa.getAllStudents
+    End Sub
+    Public Sub doEnabled()
+        txtID.Enabled = True
+        txtAge.Enabled = True
+        txtName.Enabled = True
+        txtCourse.Enabled = True
+        txtSchool.Enabled = True
+        Button4.Enabled = True
+    End Sub
+    Public Sub doDisabled()
+        txtID.Enabled = False
+        txtAge.Enabled = False
+        txtName.Enabled = False
+        txtCourse.Enabled = False
+        txtSchool.Enabled = False
+        Button4.Enabled = False
+    End Sub
+    Public Sub doClear()
+        txtName.Text = ""
+        txtAge.Text = ""
+        txtID.Text = ""
+        txtSchool.Text = ""
+        txtCourse.Text = ""
+    End Sub
+
+    Private Sub Button4_Click(sender As Object, e As EventArgs) Handles Button4.Click
+        With studentBo
+            .studentID = txtID.Text
+            .studentName = txtName.Text
+            .age = txtAge.Text
+            .course = txtCourse.Text
+            .school = txtSchool.Text
+        End With
+        If txtName.Text = "" Or txtAge.Text = "" Or txtCourse.Text = "" Or txtSchool.Text = "" Or txtID.Text = "" Then
+            MsgBox("fill out the information")
+        ElseIf add = True Then
+            studentDa.addStudent(studentBo)
+            doDisabled()
+            doClear()
+            Me.Refresh()
+        Else
+            studentDa.updateStudent(studentBo)
+            doClear()
+            doDisabled()
+        End If
+    End Sub
+
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        doEnabled()
+        add = True
+        doClear()
+    End Sub
+
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+        doEnabled()
+        add = False
+    End Sub
+    Private Sub DataGridView1_CellClick(ByVal sender As System.Object, ByVal e As System.Windows.Forms.DataGridViewCellEventArgs) Handles DataGridView1.CellClick
+        txtID.Text = DataGridView1.Item("studentID", DataGridView1.CurrentRow.Index).Value
+        txtName.Text = DataGridView1.Item("student_name", DataGridView1.CurrentRow.Index).Value
+        txtAge.Text = DataGridView1.Item("age", DataGridView1.CurrentRow.Index).Value
+        txtCourse.Text = DataGridView1.Item("course", DataGridView1.CurrentRow.Index).Value
+        txtSchool.Text = DataGridView1.Item("school", DataGridView1.CurrentRow.Index).Value
+    End Sub
+    Private Sub Button5_Click(sender As Object, e As EventArgs) Handles Button5.Click
+        DataGridView1.DataSource = studentDa.getAllStudents
+    End Sub
+    Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
+        studentDa.deleteStudents(txtID.Text)
+        doClear()
+    End Sub
+End Class
